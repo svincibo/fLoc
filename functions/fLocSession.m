@@ -20,7 +20,7 @@ classdef fLocSession
     end
     
     properties (Constant)
-        count_down = 12; % pre-experiment countdown (secs)
+        count_down = 0; % pre-experiment countdown (secs)
         stim_size = 768; % size to display images in pixels
     end
     
@@ -158,23 +158,26 @@ classdef fLocSession
                 Screen('Flip', window_ptr);
                 DrawFormattedText(window_ptr, session.instructions, 'center', 'center', tcol);
                 Screen('Flip', window_ptr);
-                get_key('g', session.keyboard);
+                [keyboardIndices, productNames, ~] = GetKeyboardIndices;
+                deviceNumber = keyboardIndices(1);
+                KbTriggerWait(53, deviceNumber);
+                % get_key('g', session.keyboard);
             elseif session.trigger == 1
-                Screen('FillRect', window_ptr, bcol);
-                Screen('Flip', window_ptr);
-                DrawFormattedText(window_ptr, session.instructions, 'center', 'center', tcol); % 'flipHorizontal', 1);
-                Screen('Flip', window_ptr);
-                while 1
-                    get_key('g', session.keyboard);
-                    [status, ~] = start_scan;
-                    if status == 0
-                        break
-                    else
-                        message = 'Trigger failed.';
-                        DrawFormattedText(window_ptr, message, 'center', 'center', fcol);
-                        Screen('Flip', window_ptr);
-                    end
-                end
+                % Screen('FillRect', window_ptr, bcol);
+                % Screen('Flip', window_ptr);
+                % DrawFormattedText(window_ptr, session.instructions, 'center', 'center', tcol); % 'flipHorizontal', 1);
+                % Screen('Flip', window_ptr);
+                % while 1
+                %     get_key('g', session.keyboard);
+                %     [status, ~] = start_scan;
+                %     if status == 0
+                %         break
+                %     else
+                %         message = 'Trigger failed.';
+                %         DrawFormattedText(window_ptr, message, 'center', 'center', fcol);
+                %         Screen('Flip', window_ptr);
+                %     end
+                % end
             end
             % display countdown numbers
             [cnt_time, rem_time] = deal(session.count_down + GetSecs);
@@ -270,8 +273,13 @@ classdef fLocSession
                 cond_names = conds(block_conds + 1);
                 cond_cols = cols(block_conds + 1);
                 fname = [session.id '_fLoc_run' num2str(rr) '.par'];
+                % fname = ['sub-' session.name '_run-' num2str(rr) '_task-floc_' session.id '.txt'];
                 fpath = fullfile(session.exp_dir, 'data', session.id, fname);
+                % fpath = fullfile('data', fname);
                 fid = fopen(fpath, 'w');
+                text1 = 'onset'; text2 = 'duration'; text3 = 'trial_type'; text4 = 'contrast';
+                fprintf(fid, '%s \t %s \t %s \t %s \n', text1, text2, text3, text4);
+                clear text1 text2 text3 text4;
                 for bb = 1:length(block_onsets)
                     fprintf(fid, '%d \t %d \t', block_onsets(bb), block_conds(bb));
                     fprintf(fid, '%s \t', cond_names{bb});
