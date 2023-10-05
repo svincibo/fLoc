@@ -1,4 +1,4 @@
-function runme(name, trigger, stim_set, num_runs, task_num, start_run)
+% function runme(name, trigger, stim_set, num_runs, task_num, start_run, ses)
 % Prompts experimenter for session parameters and executes functional
 % localizer experiment used to define regions in high-level visual cortex
 % selective to faces, places, bodies, and printed characters.
@@ -19,52 +19,63 @@ function runme(name, trigger, stim_set, num_runs, task_num, start_run)
 %% add paths and check inputs
 
 addpath('functions');
-
+Screen('Preference', 'SkipSyncTests', 1);
 % session name
-if nargin < 1
+% if nargin < 1
     name = [];
     while isempty(deblank(name))
-        name = input('Subject initials : ', 's');
+        name = input('Please enter the subID number (e.g., SS101):  ', 's');
     end
-end
+% end
 
-% option to trigger scanner
-if nargin < 2
+% % option to trigger scanner
+% if nargin < 2
     trigger = -1;
-    while ~ismember(trigger, 0:1)
-        trigger = input('Trigger scanner? (0 = no, 1 = yes) : ');
-    end
-end
+    % while ~ismember(trigger, 0:1)
+    %     trigger = input('Trigger scanner? (0 = no, 1 = yes) : ');
+    % end
+    trigger = 0;
+% end
 
 % which stimulus set/s to use
-if nargin < 3
+% if nargin < 3
     stim_set = -1;
-    while ~ismember(stim_set, 1:3)
-        stim_set = input('Which stimulus set? (1 = standard, 2 = alternate, 3 = both) : ');
-    end
-end
+    % while ~ismember(stim_set, 1:3)
+    %     stim_set = input('Which stimulus set? (1 = standard, 2 = alternate, 3 = both) : ');
+    % end
+    stim_set = 3;
+% end
 
 % number of runs to generate
-if nargin < 4
+% if nargin < 4
     num_runs = -1;
-    while ~ismember(num_runs, 1:24)
-        num_runs = input('How many runs? : ');
-    end
-end
+    % while ~ismember(num_runs, 1:24)
+    %     num_runs = input('How many runs? : ');
+    % end
+    num_runs = 4;
+% end
 
 % which task to use
-if nargin < 5
+% if nargin < 5
     task_num = -1;
-    while ~ismember(task_num, 1:3)
-        task_num = input('Which task? (1 = 1-back, 2 = 2-back, 3 = oddball) : ');
-    end
-end
+    % while ~ismember(task_num, 1:3)
+    %     task_num = input('Which task? (1 = 1-back, 2 = 2-back, 3 = oddball) : ');
+    % end
+    task_num = 1;
+% end
 
 % which run number to begin executing (default = 1)
-if nargin < 6
+% if nargin < 6
     start_run = 1;
-end
+% end
 
+% % session number
+% if nargin < 6
+    ses = [];
+    % while isempty(deblank(name))
+        ses = input('Please enter the MRI day (e.g., 1, 2, or 3) : ', 's');
+    % end
+% end
 
 %% initialize session object and execute experiment
 
@@ -87,4 +98,4 @@ for rr = start_run:num_runs
 end
 write_parfiles(session);
 
-end
+% end
